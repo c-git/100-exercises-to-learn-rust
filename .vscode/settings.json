@@ -8,5 +8,6 @@
     "Pavex",
     "underflowed",
     "underflows"
-  ]
+  ],
+  "git.enableSmartCommit": true
 }
