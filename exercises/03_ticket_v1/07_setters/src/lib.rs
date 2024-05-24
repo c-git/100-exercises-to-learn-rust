@@ -70,7 +70,7 @@ fn validate_title(title: &String) {
         panic!("Title cannot be empty");
     }
     if title.len() > 50 {
-        panic!("Title cannot be longer than 50 characters");
+        panic!("Title cannot be longer than 50 bytes");
     }
 }
 
