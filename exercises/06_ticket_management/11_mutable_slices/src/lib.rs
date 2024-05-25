@@ -3,18 +3,7 @@
 //  Does it need to take a `&mut String`? Does a `&mut [str]` work? Why or why not?
 
 pub fn lowercase(s: &mut str) {
-    assert_eq!(
-        s.len(),
-        s.chars().count(),
-        "Assumes only ascii input. Not safe to use on non ascii input"
-    );
-    const DIFF: u8 = b'a' - b'A';
-    // Assumes all chars are only ascii
-    for c in unsafe { s.as_bytes_mut() } {
-        if (b'A'..=b'Z').contains(c) {
-            *c = *c + DIFF;
-        }
-    }
+    s.make_ascii_lowercase()
 }
 
 #[cfg(test)]
