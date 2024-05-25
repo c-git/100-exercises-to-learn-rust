@@ -1,6 +1,27 @@
 // TODO: Implement `Index<&TicketId>` and `Index<TicketId>` for `TicketStore`.
 
+use std::ops::Index;
+
 use ticket_fields::{TicketDescription, TicketTitle};
+
+impl Index<&TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, index: &TicketId) -> &Self::Output {
+        match self.tickets.iter().find(|x| &x.id == index) {
+            Some(ticket) => ticket,
+            None => panic!("index: {index:?} not found"),
+        }
+    }
+}
+
+impl Index<TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, index: TicketId) -> &Self::Output {
+        &self[&index]
+    }
+}
 
 #[derive(Clone)]
 pub struct TicketStore {
