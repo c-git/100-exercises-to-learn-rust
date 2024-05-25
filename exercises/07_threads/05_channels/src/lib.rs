@@ -25,14 +25,11 @@ pub fn launch() -> Sender<Command> {
 //  for the next command.
 pub fn server(receiver: Receiver<Command>) {
     let mut store = TicketStore::new();
-    loop {
-        match receiver.recv() {
-            Ok(cmd) => match cmd {
-                Command::Insert(draft_ticket) => {
-                    store.add_ticket(draft_ticket);
-                }
-            },
-            Err(e) => eprintln!("{e}"),
+    while let Ok(cmd) = receiver.recv() {
+        match cmd {
+            Command::Insert(draft_ticket) => {
+                store.add_ticket(draft_ticket);
+            }
         }
     }
 }
