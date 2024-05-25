@@ -1,29 +1,45 @@
 use crate::data::{Ticket, TicketDraft};
 use crate::store::{TicketId, TicketStore};
-use std::sync::mpsc::{Receiver, Sender};
+use std::sync::mpsc::{self, Receiver, Sender};
 
 pub mod data;
 pub mod store;
 
 #[derive(Clone)]
 // TODO: flesh out the client implementation.
-pub struct TicketStoreClient {}
+pub struct TicketStoreClient {
+    tx_server: Sender<Command>,
+}
 
 impl TicketStoreClient {
     // Feel free to panic on all errors, for simplicity.
     pub fn insert(&self, draft: TicketDraft) -> TicketId {
-        todo!()
+        let (tx, rx) = mpsc::channel();
+        self.tx_server
+            .send(Command::Insert {
+                draft,
+                response_channel: tx,
+            })
+            .unwrap();
+        rx.recv().unwrap()
     }
 
     pub fn get(&self, id: TicketId) -> Option<Ticket> {
-        todo!()
+        let (tx, rx) = mpsc::channel();
+        self.tx_server
+            .send(Command::Get {
+                id,
+                response_channel: tx,
+            })
+            .unwrap();
+        rx.recv().unwrap()
     }
 }
 
 pub fn launch() -> TicketStoreClient {
     let (sender, receiver) = std::sync::mpsc::channel();
     std::thread::spawn(move || server(receiver));
-    todo!()
+    TicketStoreClient { tx_server: sender }
 }
 
 // No longer public! This becomes an internal detail of the library now.
